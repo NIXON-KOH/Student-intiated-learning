@@ -56,7 +56,7 @@ def get_random_word(words):
 
 def play_with_computer(words):
     print("What's the length of the secret word?")
-    length = int(input(">>> "))
+    length = int(input("| "))
     words = [word for word in words if len(word) == length]
 
     mapping = {"0": Tip.ABSENT, "1": Tip.PRESENT, "2": Tip.CORRECT}
@@ -64,7 +64,7 @@ def play_with_computer(words):
     while len(words) > 1:
         guess = get_random_word(words)
         print("How did this guess score?")
-        user_input = input(">>> ")
+        user_input = input("| ")
         sc = [mapping[char] for char in user_input if char in mapping]
         words = filter_words(words, guess, sc)
         print()
