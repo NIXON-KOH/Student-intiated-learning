@@ -11,7 +11,7 @@ name = input("Instagram account \n> ")
 open('friend.txt', 'w').close()
 
 L = instaloader.Instaloader()
-L.login("theriseof_x","123412341234")
+L.login("username","password")
 profile = instaloader.Profile.from_username(L.context, name)
 
 followers = []
