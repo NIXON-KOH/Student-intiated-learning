@@ -21,6 +21,7 @@ f.close()
 genres = []
 rejected = []
 b_id = 0
+os.system('cls' if os.name == 'nt' else 'clear')
 print("COLLECTING DATA ....")
 for i in tqdm(range(len(books))):
     try:
@@ -77,6 +78,7 @@ x = 0
 Genre_count = Counter(genres)
 genre_sort = dict(sorted(Genre_count.items(), key=lambda x: x[1],reverse=True))
 #Getting book suggestions 
+os.system('cls' if os.name == 'nt' else 'clear')
 print("GETTING RECOMMENDATIONS.....")
 x = 0
 suggestion = []
@@ -112,6 +114,7 @@ for i in tqdm(range(len(genre_sort))):
     x += 1
 
 #Refining The suggestions
+os.system('cls' if os.name == 'nt' else 'clear')
 print("REFINING SUGGESTIONS.....")
 x = 0
 file_to_delete = open("BOOKSUGGESTION.txt",'w')
@@ -130,8 +133,7 @@ for i in tqdm(range(len(suggestion))):
         print(present)
 path = os.path.abspath("BOOKSUGGESTION.txt")
 webbrowser.open(path)
-
-
+os.system('cls' if os.name == 'nt' else 'clear')
 print("Rejected Data | ",len(rejected)," / " ,len(books))
 print(rejected)
 end = time.time()
