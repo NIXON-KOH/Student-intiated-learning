@@ -1,0 +1,76 @@
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 20%;
+  margin: auto;
+  text-align: center;
+  font-family: arial;
+  padding-top:2%;
+  padding-bottom:2%;
+  border-radius: 5%;
+}
+
+.card > img {
+  max-width: 80%;
+  border-radius: 5%;
+}
+
+.row1{
+  width:80%;
+  margin-left:10%;
+  text-align: left;
+}
+
+#icon-cart {
+  display: inline-block;
+}
+
+.card > .row1 > h1 {
+  font-size:1.5em;
+  text-align: left;
+  max-width: 80%;
+  display: inline-block;
+}
+
+
+span.icon-cart > button {
+  padding: 0;
+  border: none;
+  background: none;
+  display: inline-block;
+  margin-top:6%;
+  float: right;
+}
+
+.row2 {
+  text-align: left;
+  margin-left: 10%;
+  color: grey;
+}
+
+.row2 > label {
+  font-weight: bold;
+}
+#size {
+  padding: 0;
+  background-color: lightgray;
+  border-radius: 10%;
+  width:10%;
+  padding-top:1%;
+  padding-bottom:1%;
+  -webkit-appearance: none;
+  text-align: center;
+}
+
+
+
+.card > .row3 > h2 {
+  font-size:1.0em;
+  text-align: left;
+  margin-left: 10%;
+}
+
+.price {
+  color: grey;
+  font-size: 22px;
+}
+
