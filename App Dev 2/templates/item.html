@@ -1,0 +1,29 @@
+{% block title %} {{ name }} {% endblock %}
+
+{% block content %} 
+<script src="/static/index.js"></script>
+<div class="containers">
+
+{{ image | safe }}
+<span class="img-container">
+<h1 >
+    {{ name }}
+</h1>
+<h2>
+    <hr>
+    {{ price }}
+</h2>
+<div>
+    {{ rating }}
+</div>
+<input type="button" value="Add to cart" class="add_tocart">
+</span>
+</div>
+
+
+
+  <script>
+    magnify("myimage", 2);
+    </script>
+
+{% endblock %}
