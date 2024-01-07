@@ -14,6 +14,7 @@ def initate():
     with shelve.open("Databases/product") as f:
         for i in f:
             #id_, name,Image, Stocks, Desc, Type, Status,categories,RetailCost,gender,ListCost,reviews
+            #Reads Product data
             if f[i]["type"] == "product":
                 globals()[f[i]['name']] = Product(
                     i,
@@ -61,7 +62,7 @@ app = Flask(__name__)
 @app.route("/",methods=["GET","POST"])
 def lobby():
     if request.method == "POST":
-        query = request.form.get('chat')
+        query = request.form['chat']
         chatbot(query)
     
     return render_template("index.html")
@@ -74,8 +75,8 @@ def rewards():
 @app.route("/login",methods=["GET","POST"])
 def authenticate():
     if request.method == "POST":
-        username = request.form.get('name')
-        password = request.form.get('password')
+        username = request.form['name']
+        password = request.form['password']
         global user
         with shelve.open("Databases/user") as f:
             for i in f:
@@ -91,13 +92,19 @@ def authenticate():
                     return redirect(url_for('home'))
     return render_template("login.html")
 
+@app.route("/user")
+def registration():
+    #Read User data
+    return render_template("", uname=user.get_name(),pwd=user.get_Password(),image=user.get_image(),email=user.get_Email(),addr=user.get_Address(),cart=user.get_cart(),hist=user.get_History(),joindate=user.get_JoinDate(),points=user.get_Points())
+
+
 @app.route("/registration",methods=["GET",'POST'])
 def registration():
     if request.method == "POST":
-        username = request.form.get('name')
-        password = request.form.get('password')
-        email = request.form.get('email')
-        address = request.form.get('address')
+        username = request.form['name']
+        password = request.form['password']
+        email = request.form['email']
+        address = request.form['address']
 
         with shelve.open('database') as f: 
             x = 1
@@ -105,6 +112,7 @@ def registration():
                 if f[i]['username'] == username:
                     return redirect(url_for("register.html"))
                 x += 1
+            #Create User Data
             f[str(x)] = {
                 "name" : username,
                 "password" : password,
@@ -120,6 +128,7 @@ def registration():
                 }
             
         #Email confirmation
+        #Reads user data
         smtp_user = 'appdevrulez2@gmail.com'
         smtp_password = 'pepermoflhvbytgw'
         destination_user =  email
@@ -145,6 +154,8 @@ def registration():
 def cart():
     if request.method == "POST":
         # email confirmation
+        with shelve.open("Databases/product") as f:
+            f[Customer.get_id_][Customer.get_Cart] = {}
         smtp_user = 'appdevrulez2@gmail.com'
         smtp_password = 'pepermoflhvbytgw'
         destination_user =  Customer.get_email()
@@ -166,8 +177,21 @@ def cart():
     return render_template("cart.html",user.get_Cart())
 
 
-@app.route("/shop")
+@app.route("/shop",method=["POST","GET"])
 def shop():
+    if request.method == "POST":
+        #Button will all have same name but different values
+        #adds items to cart
+        Customer.set_Cart = request.form["item"]
+        with shelve.open("Databases/user") as f:
+            for i in f:
+                if f[i]["name"] == Customer.get_name():
+                    f[i]["cart"].append(request.form["item"])   
+        with shelve.open("Databases/product") as f:
+            for i in f:
+                if f[i]["name"] == request.form['item']:
+                    f[i]["size"][request.form["size"]] = f[i]["size"][request.form["size"]] - 1
+
     cards = ""
     for i in Products:
         card_part1 = f'''<form action="test.html">
@@ -200,6 +224,167 @@ def shop():
         card = card_part1+card_part_2+card_part_3
         cards += card
     return render_template("shop.html",cards=cards)     
+
+@app.route("/admin-create-product",methods=["GET","POST"])
+def create_product():
+    #Creating product
+    if request.method=="POST":
+        with shelve.open("Databases/product") as f:
+            for i in f:
+                n = i
+            f[str(n)] = {
+                    n,
+                    request.form["name"],
+                    request.form["image"],
+                    request.form["stocks"],
+                    request.form["desc"],
+                    request.form["points"],
+                    request.form["type"],
+                    request.form["categories"],
+                    request.form["RetailCost"],
+                    request.form["gender"],
+                    request.form["ListCost"],
+                    request.form["reviews"]
+            }
+            globals()[request.form["name"]] = Product(
+                    n,
+                    request.form["name"],
+                    request.form["image"],
+                    request.form["stocks"],
+                    request.form["desc"],
+                    request.form["points"],
+                    request.form["type"],
+                    request.form["categories"],
+                    request.form["RetailCost"],
+                    request.form["gender"],
+                    request.form["ListCost"],
+                    request.form["reviews"]
+            )
+            Products.append(request.form["name"])
+            return redirect("/admin")
+    return render_template("")
+
+@app.route("/admin-rewards",methods=["POST","GET"])
+def admin_rewards():
+    if request.method == "POST":
+        pass
+
+    return render_template("")
+
+@app.route("/admin-rewards/<reward>",methods=["POST","GET"])
+def admin_rewards(reward):
+    
+    return render_template("")
+
+@app.route("/admin-products",methods=["POST","GET"])
+def admin_products():
+    if request.method == "POST":
+        #Deletes Product from the product database
+        with shelve.open("Databases/product") as f:
+            #All button will have name="rm_product" and a value that corrosponds
+            del f[request.form["rm_product"]] 
+    #Admin can view all the products from the product database
+    x = []
+    with shelve.open("Databases/product") as f:
+        for i in f:
+            x.append(i)
+    return render_template("", product=x)
+        
+@app.route("/admin-edit-info/<product>", methods=["POST","GET"])
+def edit_product(product):
+    #Updates product information
+    if request.method == "POST":
+        with shelve.open("Databases/product") as f:
+            if request.form["name"] != None:
+                f[product]["name"] = request.form["name"]
+            if request.form["image"]!= None:
+                f[product]["image"] = request.form["image"]
+            if request.form["stocks"] != None:
+                f[product]["stocks"] = request.form["stocks"]
+            if request.form["desc"] != None:
+                f[product]["desc"] = request.form["desc"]
+            if request.form["points"] != None:
+                f[product]["points"] = request.form["points"]
+            if request.form["type"] != None:
+                f[product]["type"] = request.form["type"]
+            if request.form["categories"] != None:
+                f[product]["categories"] = request.form["categories"]
+            if request.form["RetailCost"] != None:
+                f[product]["RetailCost"] = request.form["RetailCost"]
+            if request.form["gender"] != None:
+                f[product]["gender"] = request.form["gender"]
+            if request.form["ListCost"] != None:
+                f[product]["ListCost"] = request.form["ListCost"]
+            if request.form["reviews"]!= None:
+                f[product]["reviews"] = request.form["reviews"]
+
+@app.route("/admin/userdata",methods=["POST","GET"])
+def admin_user():
+    if request.method == "POST":
+        with shelve.open("Databases/user") as f:
+            x = 0
+            for i in f:
+                if f[i]["name"] == request.form["Customer"]:
+                    del f[i][str(x)]
+                x += 1
+    return render_template("admin_user")
+
+
+@app.route("/admin/userdata/<user>", methods=["POST","GET"])
+def admin_user_details(user):
+    if request.method == "POST":
+        with shelve.open("Databases/user") as f:
+            x = 0
+            for i in f:
+                if f[i]["name"] == request.form["Customer"]:
+                    if request.form["name" ] != None:
+                        f[str(x)]["name"] ==  request.form["name"] 
+                    if request.form["password" ] != None:
+                        f[str(x)]["password"] ==  request.form["password"] 
+                    if request.form["image" ] != None:
+                        f[str(x)]["image"] ==  request.form["image"] 
+                    if request.form["email" ] != None:
+                        f[str(x)]["email"] ==  request.form["email"] 
+                    if request.form["address" ] != None:
+                        f[str(x)]["address"] ==  request.form["address"] 
+                    if request.form["payment" ] != None:
+                        f[str(x)]["payment"] ==  request.form["payment"] 
+                    if request.form["point" ] != None:
+                        f[str(x)]["point"] ==  request.form["point"] 
+                    if request.form["cart" ] != None:
+                        f[str(x)]["cart"] ==  request.form["cart"] 
+                    x += 1
+    return render_template("")
+
+@app.route("/userdata/<user>",methods=["POST","GET"])
+def user_details(user):
+    if request.method == "POST":
+        with shelve.open("Databases/user") as f:
+            x = 0
+            for i in f:
+                if f[i]["name"] == request.form["Customer"]:
+                    if request.form["name" ] != None:
+                        f[str(x)]["name"] ==  request.form["name"] 
+                    if request.form["password" ] != None:
+                        f[str(x)]["password"] ==  request.form["password"] 
+                    if request.form["image" ] != None:
+                        f[str(x)]["image"] ==  request.form["image"] 
+                    if request.form["email" ] != None:
+                        f[str(x)]["email"] ==  request.form["email"] 
+                    if request.form["address" ] != None:
+                        f[str(x)]["address"] ==  request.form["address"] 
+                    if request.form["payment" ] != None:
+                        f[str(x)]["payment"] ==  request.form["payment"] 
+                    if request.form["point" ] != None:
+                        f[str(x)]["point"] ==  request.form["point"] 
+                    if request.form["cart" ] != None:
+                        f[str(x)]["cart"] ==  request.form["cart"] 
+                    if request.form["role" ] != None:
+                        f[str(x)]["role"] ==  request.form["role"] 
+                    if request.form["del"] != None:
+                        del f[str(x)]
+                x+= 1
+    return render_template("")
 
 
 if __name__ == "__main__":
