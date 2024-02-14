@@ -1,0 +1,82 @@
+{% extends 'settings-skeleton.html' %}
+{% block content %}
+    <div class="PPN-main-container">
+            <div class="PPN-bottom-container-right">
+                <h1>Payment Methods</h1>
+                <hr class="PPN-hr">
+                <div class="PPN-images">
+                    <img id="paynow" src="../static/Assets/paynow.jpg">
+                    <a href="/paypal/{{ username }}"><img id="paypal" src="../static/Assets/paypal.jpg"></a>
+                </div>
+                    <div class="PPN-payment-methods">
+                        <label for="bank-name">Full Name In Bank Account</label>
+                        <p class="PPN-data">{{ name }}</p>
+                        <label for="bank-number">Bank Account Number</label>
+                        <p class="PPN-data">{{ number }}</p>
+                        <label for="bank-phone">CVV<label>
+                        <p class="PPN-data">{{ cvv }}</p>
+                    </div>            
+                <div class="PPN-edit">
+                    <p><a href="/payment_edit/paynow/{{ username }}">Edit</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+    #PPN-payment-methods {
+    background-color: lightgray;
+}
+
+.PPN-images > #paynow, #paypal {
+    height:50px;
+    width:70px;
+    margin-bottom:3%;
+}
+
+#paynow {
+    padding-right:1%;
+}
+
+#paypal {
+    border-left:2px solid white;
+    padding-left:1%;
+    opacity:0.2;
+}
+.PPN-bottom-container-right{
+    display:inline-block;
+    width:75%;
+    margin-left:5%;
+    background-color: gray;
+    padding-left:3%;
+    padding-right:3%;
+    padding-bottom:3%;
+}
+
+a {
+    color:black;
+    text-decoration: none;
+}
+
+.PPN-hr {
+    width:100%;
+    margin-bottom:2%;
+}
+.PPN-data {
+    background-color: white;
+    padding-left:1%;
+    padding-top:1%;
+    padding-bottom:1%;
+    width: 20vw;
+}
+
+.PPN-edit {
+    background-color: white;
+    border-radius:15px;
+    width:8%;
+    text-align: center;
+    float:right;
+}
+</style>
+
+{% endblock %}

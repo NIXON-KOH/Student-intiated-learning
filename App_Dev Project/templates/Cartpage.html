@@ -1,0 +1,116 @@
+{% extends 'index.html' %}
+{% block title %}Cartpage{% endblock %}
+{% block content%}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <form method="post">
+    <div class="cart-container">
+        <div class="cart-title">
+            <h1>Cart</h1>
+        </div>
+        <div class="cart-container-bottom">
+            <div class="cart-left">
+                <!--COPY FROM HERE-->
+                {{ data | safe}}
+                
+                <!--TO HERE-->
+                <hr>
+                <div class="cart-items-bottom">
+                    <h2>{{ total_items }} items</h2>
+                    <h2 id="h2-right">SGD{{ total_price }}</h2>
+                </div>
+            </div>
+            <div class="cart-right">
+                <h3>Summary</h3>
+                <p id="cart-span-left">Subtotal</p><p id="cart-span-right">{{ total_price }}</p>
+                <hr>
+                <h3 id="cart-span-left">Total</h3><h3 id="cart-span-right"> {{ total_price }}</h3>
+                <hr>
+                <form method="post">
+                    <button class="checkout" value="checkout" name="submit">Checkout</button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    </form>
+
+    <style>
+        .cart-container{
+            min-height: 100vh;
+        }
+        .cart-img {
+            height:250px;
+            width:250px;
+        }
+        .cart-title {
+            text-align: center;
+        }
+        
+        #cart-item-hr {
+            margin-bottom:3%;
+        }
+        .cart-item {
+            padding-bottom:3%;
+        }
+        .cart-left, .cart-right {
+            width:60%;
+            display:inline-block;
+        }
+
+        .cart-item-left, .cart-item-middle, .cart-item-right {
+            display:inline-block;
+            vertical-align: top;
+        }
+        .cart-item-left {
+            padding-left:8%;
+        }
+        
+        .cart-item-middle {
+            padding-left:3%;
+        }
+        .cart-item-right {
+            padding-left:17%;
+        }
+        .cart-right {
+            float:right;
+            width:30%;
+            border:1px solid black;
+            padding:1%;
+            margin-left:5%;
+            position:fixed;
+        }
+
+        #cart-span-left , #cart-span-right {
+            display:inline-block;
+        }
+
+        #cart-span-right {
+            float:right;
+        }
+
+        .cart-items-bottom > h2 {
+            display:inline-block;
+        }
+
+        #h2-right {
+         float:right;   
+        }
+
+        .checkout {
+            width:100%;
+            padding-top:2%;
+            padding-bottom:2%;
+            margin-top:2%;
+            font-weight: bold;
+        }
+
+        #delete {
+            bottom:0;
+            background: none;
+            border:none;
+            color:red;
+        }
+    </style>
+
+{% endblock %}

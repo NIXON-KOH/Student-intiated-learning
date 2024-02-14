@@ -1,0 +1,72 @@
+{% extends 'settings-skeleton.html' %}
+{% block content %}
+    <div class="settings-main-container">
+            <div class="settings-bottom-container-right">
+                <h1 id="settings-h1">Account Details</h1>
+                <h5 id="settings-h5">Personal Information</h5>
+                <hr id="settings-hr">
+                    <div class="settings-account-details">
+                        <label class="settings-label" for="Username">Username</label>
+                        <p class="settings-data">{{ username }}</p>
+                        <label class="settings-label" for="Email Address">Email Address</label>
+                        <p class="settings-data">{{ email }}</p>
+                        <label class="settings-label" for="Password">Password</label>
+                        <p class="settings-data">{{ password }}</p>
+                    </div>
+                    <!-- <div class="image-container">
+                        <img class="profile-image-main-bottom" src="images/defualt-image.jpg">
+                    </div>                -->
+                <div class="settings-edit">
+                    <p class="settings-p"><a class="settings-a" href="/useredit/{{ username }}">Edit</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+#settings-account-details {
+    background-color: lightgray;
+}
+
+.settings-bottom-container-right{
+    display:inline-block;
+    width:100%;
+    background-color: gray;
+    padding-left:3%;
+    padding-right:3%;
+    padding-bottom:3%;
+}
+
+.settings-edit {
+    float:right;
+    margin-right:2.3%;
+}
+.settings-edit > .settings-p > .settings-a {
+    color:black;
+    text-decoration: none;
+    background-color: white;
+    width:8%;
+    text-align: center;
+    padding-left:50%;
+    padding-right:50%;
+    padding-top:10%;
+    padding-bottom:10%;
+}
+
+#settings-hr {
+    width:100%;
+    margin-bottom:2%;
+    border-color: white;
+}
+
+.settings-data {
+    background-color: white;
+    padding-left:1%;
+    padding-top:1%;
+    padding-bottom:1%;
+}
+
+
+
+</style>
+{% endblock %}

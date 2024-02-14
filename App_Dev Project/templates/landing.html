@@ -1,0 +1,77 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<div class="Landing-main-container">
+    <div class="Landing-top-container">
+        <div class="Landing-text-container">
+            <h3>At Revèille</h3>
+            <p>we believe in the power of 
+                    sustainable fashion. We’re not just a clothing store - we’re a movement, a lifestyle, and a commitment to the future of our planet.
+                    Our mission is to offer you a range of clothing items that are not only stylish and comfortable, but also kind to the environment. We carefully curate our collection to ensure that every piece you purchase from us meets the highest standards of sustainability.
+                    We’re proud to promote a culture of conscious consumerism, where every purchase makes a positive impact. Our green initiatives extend beyond our products - we strive to minimize our carbon footprint in every aspect of our operations.
+                    Join us in making a difference. Together, we can create a more sustainable world, one outfit at a time.
+                    Welcome to the Revèille family!</p>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .Landing-main-container {
+        width:65%;
+        margin:auto;
+    }
+
+    .Landing-top-container {
+        display:inline-block;
+        left:0;
+        text-align: center;
+        background-image: url(tree.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        image-rendering: -webkit-optimize-contrast;
+        padding-top:10%;
+        padding-bottom:10%;
+    }
+
+    .Landing-text-container {
+        width:50%;
+        margin:auto;
+        color:black;
+        background-color: rgb(238, 238, 238);
+        padding:5%;
+        border-radius:15px;
+
+    }
+    .Landing-bottom-container-image {
+        float:left;
+        width:50%;
+        vertical-align: top;
+    }
+
+    .Landing-bottom-container > h2 {
+        text-align: center;
+    }
+    .Landing-bottom-container-1, .Landing-bottom-container-2 {
+        width:80%;
+        margin:auto;
+    }
+    .Landing-text {
+        float:right;
+        width:50%;
+        padding-bottom:20%;
+    }
+
+    #Landing-hr {
+        width:20%;
+        margin-top:5%;
+        margin-bottom:5%;
+        visibility: hidden;
+    }
+    
+
+    /* Add more classes for additional images and adjust positions */
+
+  </style>
+
+{% endblock %}

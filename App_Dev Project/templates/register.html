@@ -1,0 +1,99 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div class="main-register-container">
+        <div class="register-container">
+            <h2 id="register-h2">Register</h2>
+            <hr class="register-hr">
+
+            <form id="registerForm" method="post">
+                <label class="register-label" for="name">Username</label>
+                <input class="register-input" type="text" id="name" name="name" minlength="8" required>
+
+                <label class="register-label" for="password">Password</label>
+                <input class="register-input" type="password" id="password" name="password"  minlength="8" required>
+
+                <label class="register-label" for="email">Email</label>
+                <input class="register-input" type="email" id="email" name="email" required>
+
+                <label class="register-label" for="address">Address</label>
+                <input class="register-input" type="text" id="address" name="address" required>
+
+                <input class="register-submit" type="submit" value="Register"></input>
+            </form>
+
+            <hr class="register-hr">
+            <div class="login-link">
+                <p>Already a user? <a href="/login">Click here</a></p>
+            </div>
+        </div>
+    </div>
+    
+
+<style>
+    .main-register-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url("/static/Assets/tree.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+}
+
+.register-container {
+    width: 400px;
+    padding: 20px;
+    background-color: rgb(240, 216, 152);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#register-h2, .register-hr {
+    margin-bottom: 20px;
+}
+
+#register-h2 {
+    text-align: center;
+}
+
+.register-hr {
+    border: 0;
+    height: 1px;
+    background: black;
+}
+
+.register-label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.register-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+.register-submit {
+    width: 100%;
+    padding: 10px;
+    background-color:  rgb(196, 219, 162);
+    color: black;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.login-link > p > a {
+    text-decoration: none;
+    color:red;
+}
+</style>
+{% endblock %}

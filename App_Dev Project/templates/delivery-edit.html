@@ -1,0 +1,76 @@
+{% extends 'settings-skeleton.html' %}
+{% block content %}
+    <div class="main-container">
+            <div class="bottom-container-right">
+                <h1>Delivery Addresses</h1>
+                <hr>
+                <form method="post">
+                    <div class="account-details">
+                            <label for="delivery-address">Address</label><br>
+                            <input type="text" id="delivery-address" name="delivery-address" placeholder="{{ address }}"></input><br>
+                    </div>
+                <div class="buttons">
+                    <p id="cancel"><a href="/delivery/{{ username }}">Cancel</a></p>
+                    <button type="submit" id="save">Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<style>
+    #delivery-addresses {
+    background-color: lightgray;
+}
+
+.bottom-container-right{
+    display:inline-block;
+    width:75%;
+    margin-left:5%;
+    background-color: gray;
+    padding-left:3%;
+    padding-right:3%;
+    padding-bottom:3%;
+}
+
+hr {
+    width:100%;
+    margin-bottom:2%;
+}
+
+a {
+    color:black;
+    text-decoration: none;
+}
+
+input {
+    width:98%;
+    margin-top:1%;
+    margin-bottom:1%;
+    padding:1%;
+}
+
+.buttons   {
+    width:8%;
+    text-align: center;
+    float:right;
+}
+
+#cancel {
+    display:inline-block;
+    background-color: white;
+    padding: 7%;
+}
+
+
+#save {
+    display:inline-block;
+    background-color: white;
+    border:none;
+    padding:10%;
+    padding-left: 10%;
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'admin-skeleton.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="user-admin-bottom-container-right">
+    <!-- Top Container -->
+    <div class="user-admin-top-container">
+        <h1 class="user-admin-h1">User Account Overview</h1>
+        <p class="user-admin-h1">{{ total_admin_accounts }} Admin and {{ total_user_accounts }} User Accounts</p>
+    </div>
+
+    <!-- Bottom Container -->
+    <div class="user-admin-bottom-container">
+        <!-- Top Container of Bottom Container -->
+        <div class="user-admin-top-bottom-container">
+            <h2 class="user-admin-h2">User Data</h2>
+            <a class="user-admin-a" href="/admin/create-admin"><p class="add-admin-btn">+ Add Admin Account</p></a>
+        </div>
+
+        <!-- Bottom Container of Bottom Container -->
+        <div class="user-admin-bottom-bottom-container">
+            <!-- Table -->
+            <table class="user-admin-table">
+                <thead class="user-admin-thead">
+                    <tr class="user-admin-tr">
+                        <th class="user-admin-th">Name</th>
+                        <th class="user-admin-th">Type</th>
+                        <th class="user-admin-th">Update</th>
+                        <th class="user-admin-th">Date</th>
+                        <th class="user-admin-th">Delete</th>
+                    </tr>
+                </thead>
+                <tbody class="user-admin-tbody">
+                    {{ data | safe }}
+                    <!-- Add more rows with data as needed -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    
+
+.user-admin-bottom-container-right {
+    max-width: 75%;
+    margin: auto;
+    background-color: gray;
+    padding-top:3%;
+    padding-bottom:5%;
+    margin-left:13vw;
+}
+
+.user-admin-top-container {
+    background-color: #f0f0f0;
+    padding: 10px;
+    text-align: left;
+    width:80%;
+    margin:auto;
+}
+
+.user-admin-top-container .user-admin-h1 {
+    margin-bottom: 5px;
+}
+
+.user-admin-bottom-container {
+    margin-top: 20px;
+}
+
+.user-admin-top-bottom-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    width:80%;
+    margin:auto;
+}
+
+.add-admin-btn {
+    background-color: lightgray;
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.user-admin-bottom-bottom-container .user-admin-table {
+    width: 80%;
+    margin:auto;
+    border-collapse: collapse;
+}
+
+.user-admin-bottom-bottom-container .user-admin-th, .user-admin-bottom-bottom-container .user-admin-td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.user-admin-bottom-bottom-container .user-admin-td {
+    background-color: white;
+}
+
+.user-admin-bottom-bottom-container .user-admin-th {
+    background-color: lightgray;
+    color: black;
+}
+
+.fa-pencil-alt, .fa-trash-alt {
+    cursor: pointer;
+    color: #555;
+}
+
+.user-admin-a {
+    text-decoration: none;
+    color:black;
+}
+
+.user-admin-button {
+    border-radius:10px;
+}
+
+.user-admin-tr {
+    border-bottom: 1px solid black;
+}
+
+.user-admin-td {
+    padding:50px;
+}
+
+
+
+</style>
+
+{% endblock %}

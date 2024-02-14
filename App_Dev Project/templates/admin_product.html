@@ -1,0 +1,97 @@
+{% extends 'admin-skeleton.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="AdminProduct_Content">
+    <div style="background-color: white; padding: 10px;">
+        <header style="font-size: 26px;">Products Overview</header>
+    </div>
+    <div class="ProductContents">
+        <table>
+            <tr>
+                <th>Product Name</th>
+                <th>Gender</th>
+                <th>Category</th>
+                <th>Color</th>
+                <th>S</th>
+                <th>M</th>
+                <th>L</th>
+                <th>XL</th>
+                <th>XXL</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+
+            <div class="Products">
+              {{ cards | safe }}
+            </div>
+        </table>
+    </div>
+</div>
+
+<style>
+form.hide-submit input[type="submit"] 
+{ display: none;
+
+}
+
+.tgt{
+    border: none;
+    background: none;
+    padding: 0;
+    position: relative;
+    right: 50px;
+}
+
+.AdminProduct_Content {
+    background-color: #D9D9D9;
+    float: right;
+    width: calc(100% - 350px);
+    padding: 20px;
+    white-space: pre-wrap;
+}
+
+.ProductContents p {
+    display: inline-block;
+    margin-right: 20px;
+    font-weight: bold;
+    white-space: pre-wrap;
+}
+
+.ProductContents {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.Products{
+    white-space: pre-wrap;
+}
+
+.Products p,
+.Products span {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.Products img {
+    width: 10px;
+    height: 10px;
+}
+
+.fa-pencil-alt,
+.fa-trash-alt {
+    cursor: pointer;
+    color: #555;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+</style>
+
+{% endblock %}
