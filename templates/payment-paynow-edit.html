@@ -1,0 +1,112 @@
+{% extends 'settings-skeleton.html' %}
+{% block content %}
+    <div class="PPNE-main-container">
+            <div class="PPNE-bottom-container-right">
+                <h1>Payment Methods</h1>
+                <hr class="PPNE-hr">
+                <div class="PPNE-images">
+                    <img id="paynow" src="../static/Assets/paynow.jpg">
+                    <a href="/payment_edit/paypal/{{ username }}"><img id="paypal" src="../static/Assets/paypal.jpg"></a>
+                </div>
+                <form method="post">
+                <div class="PPNE-payment-methods">
+                    <label for="paynow-name">Full Name In Bank Account</label><br>
+                    <input type="text" id="PPNE-data" name="paynow-name" placeholder="{{ name }}"><br>
+                    <label for="paynow-account_num">Account Number</label><br>
+                    <input type="text" id="PPNE-data" name="paynow-account_num" placeholder="{{ account_num }}"><br>
+                    <label for="paynow-cvv">CVV<label><br>
+                    <input type="tel" id="PPNE-data" name="paynow-cvv"  placeholder="{{ cvv }}">
+                </div>            
+                <div class="PPNE-buttons">
+                    <p id="cancel"><a href="/paynow/{{ username }}">Cancel</a></p>
+                    <button type="submit" id="PPNE-save" name="payment-paynow">Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<style>
+    #PPNE-payment-methods {
+    background-color: lightgray;
+}
+
+.PPNE-bottom-container-right{
+    display:inline-block;
+    width:75%;
+    margin-left:5%;
+    background-color: gray;
+    padding-left:3%;
+    padding-right:3%;
+    padding-bottom:3%;
+}
+ #PPNE-data{
+    width:20vw;
+ }
+a {
+    color:black;
+    text-decoration: none;
+}
+
+.PPNE-hr {
+    width:100%;
+    margin-bottom:2%;
+}
+#PPNE-data {
+    background-color: white;
+    padding-left:1%;
+    padding-top:1%;
+    padding-bottom:1%;
+}
+
+
+.PPNE-images > #paynow, #paypal {
+    height:50px;
+    width:70px;
+    margin-bottom:3%;
+}
+
+#paynow {
+    padding-right:1%;
+    height:50px;
+    width:70px;
+    margin-bottom:3%;
+}
+
+#paypal {
+    border-left:2px solid white;
+    padding-left:1%;
+    opacity:0.2;
+}
+
+input {
+    width:98%;
+    margin-top:1%;
+    margin-bottom:1%;
+    padding:1%;
+    border:none;
+}
+
+.buttons   {
+    width:8%;
+    text-align: center;
+    float:right;
+}
+
+#cancel {
+    display:inline-block;
+    background-color: white;
+    padding: 7%;
+}
+
+
+#PPNE-save {
+    display:inline-block;
+    background-color: white;
+    border:none;
+    padding:10%;
+    padding-left: 10%;
+}
+</style>
+
+{% endblock %}

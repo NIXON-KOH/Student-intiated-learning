@@ -1,0 +1,56 @@
+{% extends 'settings-skeleton.html' %}
+{% block content %}
+    <div class="main-container">
+            <div class="bottom-container-right">
+                <h1>Delivery Addresses</h1>
+                <hr>
+                    <div class="account-details">
+                        <label for="delivery-address">Address</label>
+                        <p class="data">{{ address }}</p>               
+                <div class="edit">
+                    <p><a href="/address/edit/{{ username }}">Edit</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+    #delivery-addresses {
+    background-color: lightgray;
+}
+
+.bottom-container-right{
+    display:inline-block;
+    width:75%;
+    margin-left:5%;
+    background-color: gray;
+    padding-left:3%;
+    padding-right:3%;
+    padding-bottom:3%;
+}
+
+a {
+    color:black;
+    text-decoration: none;
+}
+
+hr {
+    width:100%;
+    margin-bottom:2%;
+}
+.data {
+    background-color: white;
+    padding-left:1%;
+    padding-top:1%;
+    padding-bottom:1%;
+}
+.edit {
+    background-color: white;
+    border-radius:15px;
+    width:8%;
+    text-align: center;
+    float:right;
+    margin-top:5%;
+}
+</style>
+{% endblock %}

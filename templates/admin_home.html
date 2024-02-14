@@ -1,0 +1,78 @@
+{% extends "admin-skeleton.html" %} {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<head>
+  <title>Admin Home</title>
+  <style>
+    body {
+      background-color: gray;
+    }
+
+    .chart-container {
+      height: 500px;
+      width: 75%;
+      float: right;
+      background-color: white;
+      margin-bottom: 40px;
+    }
+
+    .export-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas
+    id="myChart"
+    style="width: 100%; max-width: 700px; z-index: 100"></canvas>
+
+  <a class="export-button" href="/static/report/Reville.xlsx" target="_blank"
+    >DOWNLOAD DA FILE</a
+  >
+
+  <script>
+    const xValues = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sept",
+      "Nov",
+      "Dec",
+    ];
+    let stringArray = "{{ list1 }}".split(" ");
+
+    const yValues = stringArray.map(Number);
+
+    let maximum = Math.max(...yValues) + 10;
+    new Chart("myChart", {
+      type: "line",
+      data: {
+        labels: xValues,
+        datasets: [
+          {
+            fill: false,
+            lineTension: 0.3,
+            backgroundColor: "rgba(0,0,0,1.0)",
+            borderColor: "rgba(255,255,255,0.8)",
+            data: yValues,
+          },
+        ],
+      },
+      options: {
+        legend: { display: false },
+        scales: {
+          yAxes: [{ ticks: { min: 0, max: maximum } }],
+        },
+      },
+    });
+  </script>
+</body>
+
+{% endblock %}
