@@ -1,0 +1,115 @@
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #000033;
+    overflow-x: hidden;
+    transition: 0.35s;
+    padding-top: 60px;
+}
+  
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.4s;
+}
+
+.sidenav a:hover {
+    color:  #EBCC4F;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+.topnav {
+    position: relative;
+    overflow: hidden;
+    top:-10px;
+    left:-10px;
+    width: 102%;
+    height:80px;
+    background-color: #030047;
+  }
+  
+  .topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+  
+  .topnav a:hover {
+    background-color: #EBCC4F ;
+    color:  #030047;
+    transition:0.5s;
+  }
+  
+  .topnav a.active {
+    background-color:  #EBCC4F;
+    color: #002147;
+  }
+  
+  .topnav-centered a {
+    float: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .topnav-left{
+
+    position: absolute;
+    top: 25%;   
+    margin-left:20px;
+    color:white;
+    font-size: 30px;
+    cursor: pointer;
+  }
+  .topnav-right {
+    margin-top: 18px; 
+    float: right;
+    margin-right: 30px;
+    border-radius: 50%;
+  }
+  .topnav #mySearch{
+    float:left;
+    margin-top:12px;
+    border-radius: 5px;
+    height:20px;
+    visibility: collapse;
+    opacity :0.7;
+  }
+  
+  
+  /* Responsive navigation menu (for mobile devices) */
+  @media screen and (max-width: 600px) {
+    .topnav a, .topnav-right {
+      float: none;
+      display: block;
+    }
+    
+    .topnav-centered a {
+      position: relative;
+      top: 0;
+      left: 0;
+      transform: none;
+    }
+  }
+
