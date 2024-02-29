@@ -80,10 +80,6 @@ namespace Test
                 chunks[i] = bits_32(new_chunk);
             }
 
-            for (int i=0; i<chunks.Length; i++)
-            {
-                Console.WriteLine(chunks[i]);
-            }
             //The first 32 Bits of the fractional value of the square root of the first 64 prime numbers.
             string[] K_constants = 
             {
@@ -176,23 +172,12 @@ namespace Test
 
             for (int i = 0;i<64;i++)
             {
-                Console.WriteLine(i);
                 string Sigma_0 = sigma(e, 6, 11, 25);
                 string Sigma_1 = sigma(a, 2, 13, 22);
                 string choice = choose(e, f, g);
                 string Majority = majority(a,b,c);
-                Console.WriteLine("a : " + a);
-                Console.WriteLine("b : " + b);
-                Console.WriteLine("c : " + c);
-                Console.WriteLine("d : " + d);
-                Console.WriteLine("e : " + e);
-                Console.WriteLine("f : " + f);
-                Console.WriteLine("g : " + g);
-                Console.WriteLine("h : " + h);
                 string temp1 = Convert.ToString((Convert.ToInt32(h,2) + Convert.ToInt32(Sigma_0,2) + Convert.ToInt32(choice,2) + Convert.ToInt32(K_constants[i],2) + Convert.ToInt32(chunks[i],2)),2);
                 string temp2 = Convert.ToString((Convert.ToInt32(Sigma_1,2) + Convert.ToInt32(Majority,2)),2);
-                Console.WriteLine("temp1 : " + bits_32(temp1));
-                Console.WriteLine("temp2 : " + bits_32(temp2));
 
                 h = g;
                 g = f; 
@@ -205,7 +190,6 @@ namespace Test
             }
 
 
-            Console.WriteLine("a : " + a);
             h0 = (Convert.ToInt32(h0, 2) + Convert.ToInt32(a, 2)).ToString("X");
             
             h1 = (Convert.ToInt32(h1, 2) + Convert.ToInt32(b, 2)).ToString("X");
@@ -274,19 +258,16 @@ namespace Test
                     case '1': new_e += f[i];break;
                 }
             }
-            Console.WriteLine("Choice : " + new_e);
+           
             return new_e;
         }
         static string sigma(string chunk, int right_rotate_1, int right_rotate_2, int right_rotate_3)
         {
-            Console.WriteLine(chunk);
             //Rotate
             string chunk_1 = chunk.Substring(32 - right_rotate_1, right_rotate_1) + chunk.Substring(0, 32 - right_rotate_1);
-            Console.WriteLine("Chunk 1 : " + chunk_1);
             string chunk_2 = chunk.Substring(32 - right_rotate_2, right_rotate_2) + chunk.Substring(0, 32 - right_rotate_2);
-            Console.WriteLine("Chunk 2 : " + chunk_2);
             string chunk_3 = chunk.Substring(32 - right_rotate_3, right_rotate_3) + chunk.Substring(0, 32 - right_rotate_3);
-            Console.WriteLine("Chunk 3 : " + chunk_3);
+        
             string new_chunk = "";
             for (int i = 0; i < 32; i++)
             {
@@ -323,7 +304,6 @@ namespace Test
                     Majority += "1";
                 }
             }
-            Console.WriteLine("Majority : " + Majority);
             return Majority;
         }
     }
