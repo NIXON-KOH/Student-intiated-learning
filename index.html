@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>focus nook · transparent · forest default</title>
+    <!-- clean favicon – no more 404s -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍃</text></svg>">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.17/dist/interact.min.js"></script>
+    <style>
+        /* ---------- your existing styles (unchanged) ---------- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
+            background-color: #f4efe9;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: background-image 0.3s ease, background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            padding: 20px;
+            color: #2c3e2f;
+        }
+        body.dark-mode {
+            --clay: #c27e5e;
+            --sage: #5d8461;
+            --cream: #2a2f2a;
+            --walnut: #e0d6cc;
+            --linen: #3a3f3a;
+            --glass-bg: rgba(30, 35, 30, 0.7);
+            --header-bg: rgba(30, 35, 30, 0.9);
+            background-color: #1e241e;
+            color: #ddd;
+        }
+        :root {
+            --clay: #b87c5e;
+            --sage: #8aa77d;
+            --cream: #faf3eb;
+            --walnut: #4f3f2f;
+            --linen: #e2d9cd;
+            --glass-bg: rgba(250, 243, 235, 0.6);
+            --header-bg: rgba(250, 243, 235, 0.9);
+            --shadow: 0 20px 40px -14px rgba(58,38,22,0.3);
+            --shadow-hover: 0 28px 48px -16px rgba(58,38,22,0.4);
+            --border-light: 1px solid rgba(193,123,94,0.25);
+            --radius-lg: 28px;
+            --radius-md: 20px;
+        }
+        #app { position: relative; width: 100%; height: calc(100vh - 40px); overflow: hidden; }
+        
+        .header {
+            position: fixed; top: 10px; left: 20px; z-index: 1000;
+            background: var(--header-bg); backdrop-filter: blur(14px);
+            padding: 8px 28px; border-radius: 60px;
+            box-shadow: 0 10px 18px -8px rgba(0,0,0,0.15);
+            font-size: 1.5rem; font-weight: 450; color: var(--walnut);
+            border: 1px solid rgba(193,123,94,0.3);
+            display: flex; align-items: center; gap: 16px;
+            letter-spacing: -0.01em;
+        }
+        .header i { color: var(--clay); font-size: 1.3rem; }
+        .exit-focus-btn {
+            background: var(--clay); color: white; border: none;
+            border-radius: 40px; padding: 6px 20px; font-size: 0.9rem;
+            cursor: pointer; display: none; align-items: center; gap: 8px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.12); transition: 0.2s;
+            font-weight: 500;
+        }
+        .exit-focus-btn i { font-size: 1rem; color: white; }
+        .exit-focus-btn:hover { background: #a56548; transform: scale(1.02); }
+
+        .sidebar {
+            position: fixed; right: 12px; top: 80px; z-index: 2000;
+            display: flex; flex-direction: column; gap: 12px;
+            background: transparent;
+        }
+        .sidebar-btn {
+            width: 56px; height: 56px; border-radius: 30px;
+            background: var(--glass-bg); backdrop-filter: blur(8px);
+            border: 1px solid rgba(193, 123, 94, 0.35);
+            font-size: 1.5rem; cursor: pointer; display: flex;
+            align-items: center; justify-content: center;
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            color: var(--walnut); box-shadow: 0 8px 14px rgba(0,0,0,0.1);
+        }
+        .sidebar-btn i { font-size: 1.5rem; }
+        .sidebar-btn:hover { background: var(--clay); color: white; transform: scale(1.1) rotate(2deg); border-color: transparent; }
+        .sidebar-btn.minimized { opacity: 0.4; background: var(--linen); color: var(--walnut); transform: scale(0.95); }
+
+        .pad {
+            position: absolute; background: var(--glass-bg); backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg); box-shadow: var(--shadow);
+            border: var(--border-light); overflow: hidden;
+            display: flex; flex-direction: column; min-width: 240px; min-height: 150px;
+            transition: box-shadow 0.25s, border-color 0.2s, transform 0.1s; color: var(--walnut);
+        }
+        .pad:hover { box-shadow: var(--shadow-hover); border-color: rgba(193,123,94,0.5); }
+        .pad-header {
+            background: rgba(193, 123, 94, 0.2); padding: 14px 20px; cursor: grab;
+            font-weight: 550; border-bottom: 1px solid rgba(193,123,94,0.25);
+            color: #3f3222; display: flex; justify-content: space-between; align-items: center;
+            user-select: none; font-size: 1rem; letter-spacing: 0.02em;
+            backdrop-filter: blur(4px); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+        body.dark-mode .pad-header { color: #eee; background: rgba(193,123,94,0.25); }
+        .pad-header i { margin-right: 10px; color: var(--clay); font-size: 1.2rem; }
+        .pad-header:active { cursor: grabbing; }
+        .pad-content {
+            padding: 20px; overflow-y: auto; flex: 1;
+            scrollbar-width: thin; scrollbar-color: var(--clay) var(--cream);
+        }
+        .pad-content::-webkit-scrollbar { width: 6px; }
+        .pad-content::-webkit-scrollbar-track { background: var(--cream); border-radius: 10px; }
+        .pad-content::-webkit-scrollbar-thumb { background: var(--clay); border-radius: 20px; }
+        .resize-handle {
+            position: absolute; bottom: 6px; right: 6px; width: 24px; height: 24px;
+            cursor: nwse-resize; background: radial-gradient(circle, var(--clay) 3px, transparent 4px);
+            background-size: 8px 8px; background-position: bottom right; background-repeat: no-repeat;
+            opacity: 0.4; transition: 0.2s; border-radius: 0 0 var(--radius-lg) 0;
+        }
+        .resize-handle:hover { opacity: 1; background: radial-gradient(circle, var(--clay) 4px, transparent 5px); }
+
+        button, .btn {
+            background: var(--sage); border: none; color: white; padding: 10px 18px;
+            border-radius: 50px; font-size: 0.9rem; cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05); transition: 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2); font-weight: 500;
+            display: inline-flex; align-items: center; gap: 8px; line-height: 1;
+        }
+        button i { font-size: 1rem; }
+        button:hover { background: #6f8f63; transform: translateY(-2px); box-shadow: 0 12px 18px rgba(0,0,0,0.1); }
+        button.secondary { background: rgba(138,167,125,0.15); color: var(--walnut); border: 1px solid var(--clay); backdrop-filter: blur(4px); }
+        button.secondary:hover { background: rgba(193,123,94,0.2); transform: translateY(-2px); }
+
+        input, select, textarea {
+            background: rgba(255,255,255,0.7); border: 1px solid var(--clay);
+            border-radius: 40px; padding: 12px 20px; font-size: 0.95rem;
+            color: var(--walnut); width: 100%; margin: 8px 0;
+            transition: 0.2s; font-family: inherit; backdrop-filter: blur(4px);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+        }
+        body.dark-mode input, body.dark-mode textarea { background: #3e453e; color: #eee; border-color: #9b8b7a; }
+        input:focus, textarea:focus { outline: 2px solid var(--sage); background: white; transform: scale(1.01); }
+        body.dark-mode input:focus { background: #4f574f; }
+
+        .no-drag { cursor: auto; }
+        .no-drag * { pointer-events: auto; }
+
+        /* ----- custom checkboxes ----- */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            margin: 6px 0;
+        }
+        .checkbox-wrapper input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .checkbox-wrapper .checkmark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            background: rgba(255,255,255,0.3);
+            border: 2px solid var(--clay);
+            border-radius: 6px;
+            transition: 0.1s;
+            color: white;
+            font-size: 14px;
+            backdrop-filter: blur(2px);
+        }
+        .checkbox-wrapper input[type="checkbox"]:checked + .checkmark {
+            background: var(--clay);
+            border-color: var(--clay);
+        }
+        .checkbox-wrapper input[type="checkbox"]:checked + .checkmark::after {
+            content: "✓";
+            font-weight: bold;
+        }
+        .checkbox-wrapper:hover .checkmark {
+            background: rgba(193,123,94,0.3);
+        }
+
+        .todo-item {
+            display: flex; align-items: center; gap: 12px; padding: 8px 0;
+        }
+        .todo-item .todo-check {
+            font-size: 1.4rem; color: var(--clay); cursor: pointer;
+            width: 24px; text-align: center; transition: 0.1s;
+        }
+        .todo-item .todo-check:hover { transform: scale(1.1); }
+        .todo-item .todo-text { flex: 1; font-size: 0.95rem; }
+        .todo-item .delete-todo {
+            background: none; border: none; color: #b95c3b; font-size: 1.3rem;
+            cursor: pointer; padding: 0 5px; line-height: 1;
+        }
+        .todo-item .todo-text.completed { text-decoration: line-through; opacity: 0.7; }
+
+        .mode-selector {
+            display: flex; gap: 8px; justify-content: center; margin-bottom: 16px;
+        }
+        .mode-btn {
+            background: rgba(193,123,94,0.15); border: 1px solid var(--clay);
+            border-radius: 40px; padding: 6px 14px; font-size: 0.85rem;
+            cursor: pointer; color: var(--walnut); transition: 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .mode-btn i { font-size: 1rem; color: var(--clay); }
+        .mode-btn.active {
+            background: var(--clay); color: white; border-color: var(--clay);
+        }
+        .mode-btn.active i { color: white; }
+
+        .timer-display {
+            font-size: 3.6rem; font-weight: 300; text-align: center; margin: 12px 0;
+            font-family: 'Fira Mono', 'Courier New', monospace; color: var(--walnut);
+            letter-spacing: 4px; text-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .sound-grid {
+            display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;
+        }
+        .sound-btn {
+            flex: 1 0 calc(50% - 10px); background: rgba(193,123,94,0.12);
+            border: 1px solid var(--clay); color: var(--walnut); padding: 12px;
+            border-radius: 60px; font-size: 0.9rem; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-weight: 500; backdrop-filter: blur(4px);
+        }
+        .sound-btn i { font-size: 1.2rem; }
+        .sound-btn:hover { background: var(--clay); color: white; transform: scale(0.98); border-color: transparent; }
+        .sound-btn.playing { background: var(--sage); color: white; border-color: var(--sage); box-shadow: 0 0 0 2px rgba(138,167,125,0.5); }
+
+        .bg-selector {
+            display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0;
+        }
+        .bg-option { flex: 1 0 70px; }
+        .bg-option input[type="radio"] { display: none; }
+        .bg-option label {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.2); border-radius: 30px; padding: 12px 6px;
+            border: 2px solid transparent; transition: 0.2s; cursor: pointer;
+            font-size: 0.75rem; text-transform: capitalize; color: var(--walnut);
+            backdrop-filter: blur(4px);
+        }
+        .bg-option input[type="radio"]:checked + label { border-color: var(--clay); background: rgba(193,123,94,0.2); transform: scale(1.02); }
+        .bg-option i { font-size: 1.6rem; color: var(--clay); }
+
+        .spotify-presets {
+            display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0;
+        }
+        .spotify-presets button {
+            flex: 1; background: rgba(138,167,125,0.2); color: var(--walnut);
+            border: 1px solid var(--sage); padding: 8px 10px;
+        }
+
+        .tab-toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #b84a3a; color: white; 
+            padding: 18px 40px; border-radius: 60px; font-size: 1.3rem; 
+            font-weight: 600; z-index: 3000; box-shadow: 0 20px 30px rgba(0,0,0,0.4); 
+            display: flex; align-items: center; gap: 16px;
+            animation: shake 0.4s ease, fadeSlide 0.3s ease;
+            backdrop-filter: blur(8px); border: 2px solid rgba(255,200,150,0.5);
+        }
+        @keyframes shake {
+            0%,100%{ transform: translateX(-50%) translateX(0); }
+            20%{ transform: translateX(-50%) translateX(-8px); }
+            40%{ transform: translateX(-50%) translateX(8px); }
+            60%{ transform: translateX(-50%) translateX(-4px); }
+            80%{ transform: translateX(-50%) translateX(4px); }
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .flex-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .mt-2 { margin-top: 16px; }
+        .text-small { font-size: 0.8rem; opacity: 0.7; }
+        .quote-box {
+            background: rgba(255,255,255,0.25); border-radius: 20px; padding: 16px;
+            font-style: italic; border-left: 4px solid var(--clay);
+            font-size: 1rem; backdrop-filter: blur(4px);
+        }
+        .goal-input { border-radius: 30px; }
+
+        .distraction-count {
+            font-size: 2.5rem; font-weight: 300; text-align: center; margin: 10px 0;
+        }
+        .distraction-icon { font-size: 2rem; text-align: center; cursor: pointer; transition: transform 0.1s; }
+        .distraction-icon:active { transform: scale(0.9); }
+
+        input[type=range] {
+            width: 100%;
+            margin: 8px 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--clay) 0%, var(--clay) var(--fill, 0%), rgba(193,123,94,0.2) var(--fill, 0%));
+            border-radius: 20px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border: 2px solid var(--clay);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            margin-top: -7px;
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border: 2px solid var(--clay);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 8px;
+            background: linear-gradient(90deg, var(--clay) 0%, var(--clay) var(--fill, 0%), rgba(193,123,94,0.2) var(--fill, 0%));
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <i class="fas fa-leaf"></i> focus nook
+        <button class="exit-focus-btn" id="exitFocusBtn"><i class="fas fa-arrow-right-from-bracket"></i> exit focus</button>
+    </div>
+    <div class="sidebar" id="sidebar"></div>
+    <div id="app"></div>
+
+<script>
+(function() {
+    const PAD_IDS = ['pomodoro', 'todo', 'notes', 'spotify', 'ambient', 'motivation', 'settings', 'distraction'];
+    const DEFAULT_LAYOUT = {
+        pomodoro:   { x: 40, y: 70, w: 320, h: 380 },
+        todo:       { x: 380, y: 70, w: 320, h: 320 },
+        notes:      { x: 720, y: 70, w: 300, h: 220 },
+        spotify:    { x: 40, y: 410, w: 340, h: 280 },
+        ambient:    { x: 400, y: 410, w: 320, h: 280 },
+        motivation: { x: 740, y: 320, w: 300, h: 240 },
+        settings:   { x: 40, y: 660, w: 360, h: 400 },
+        distraction: { x: 430, y: 670, w: 300, h: 200 }
+    };
+
+    const BG_PRESETS = {
+        forest: { url: 'url("https://images.pexels.com/photos/38136/pexels-photo-38136.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")', icon: 'fa-tree' },
+        fireplace: { url: 'url("https://images.pexels.com/photos/4069255/pexels-photo-4069255.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")', icon: 'fa-fire' },
+        rain: { url: 'url("https://images.pexels.com/photos/125510/pexels-photo-125510.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")', icon: 'fa-cloud-rain' },
+        mountains: { url: 'url("https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")', icon: 'fa-mountain' },
+        library: { url: 'url("https://images.pexels.com/photos/3494806/pexels-photo-3494806.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")', icon: 'fa-book' }
+    };
+
+    let pads = {};
+    let timerInterval = null;
+    let timerState = {
+        mode: 'pomodoro',
+        workMins: 25, breakMins: 5,
+        countdownMins: 5,
+        secondsLeft: 25 * 60,
+        stopwatchSeconds: 0,
+        active: false,
+        targetTime: null
+    };
+
+    let distractionCount = 0;
+    let todoItems = [];
+    let notesText = '';
+
+    // ---------- ambient sounds using Web Audio API (no external files, no CORS) ----------
+    let audioContext = null;
+    let currentSound = null; // { type, nodes: [], gainNode, stop() }
+    let currentSoundKey = null;
+
+    // Initialize AudioContext on first user interaction
+    function getAudioContext() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return audioContext;
+    }
+
+    // Create a white noise buffer (reused)
+    let noiseBuffer = null;
+    function getNoiseBuffer() {
+        if (noiseBuffer) return noiseBuffer;
+        const ctx = getAudioContext();
+        const bufferSize = 2 * ctx.sampleRate; // 2 seconds of noise
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const output = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
+        }
+        noiseBuffer = buffer;
+        return noiseBuffer;
+    }
+
+    function stopAmbient() {
+        if (currentSound) {
+            try {
+                currentSound.stop();
+            } catch (e) {}
+            currentSound = null;
+        }
+        currentSoundKey = null;
+        document.querySelectorAll('.sound-btn').forEach(btn => btn.classList.remove('playing'));
+    }
+
+    async function playAmbient(type) {
+        stopAmbient();
+
+        const ctx = getAudioContext();
+        // Resume context if suspended (browser autoplay policy)
+        if (ctx.state === 'suspended') {
+            await ctx.resume();
+        }
+
+        const gainNode = ctx.createGain();
+        gainNode.gain.value = loadAmbientVolume();
+        gainNode.connect(ctx.destination);
+
+        let sourceNode;
+        let stopFn;
+
+        // Create sound based on type
+        if (type === 'white noise') {
+            // Simple white noise using buffer loop
+            const buffer = getNoiseBuffer();
+            sourceNode = ctx.createBufferSource();
+            sourceNode.buffer = buffer;
+            sourceNode.loop = true;
+            sourceNode.connect(gainNode);
+            sourceNode.start();
+            stopFn = () => {
+                try {
+                    sourceNode.stop();
+                    sourceNode.disconnect();
+                } catch (e) {}
+            };
+        } else if (type === 'rain') {
+            // Filtered noise to simulate rain
+            const buffer = getNoiseBuffer();
+            sourceNode = ctx.createBufferSource();
+            sourceNode.buffer = buffer;
+            sourceNode.loop = true;
+
+            const bandpass = ctx.createBiquadFilter();
+            bandpass.type = 'bandpass';
+            bandpass.frequency.value = 400;
+            bandpass.Q.value = 0.5;
+
+            const lowShelf = ctx.createBiquadFilter();
+            lowShelf.type = 'lowshelf';
+            lowShelf.frequency.value = 200;
+            lowShelf.gain.value = -10;
+
+            sourceNode.connect(bandpass);
+            bandpass.connect(lowShelf);
+            lowShelf.connect(gainNode);
+            sourceNode.start();
+            stopFn = () => {
+                try {
+                    sourceNode.stop();
+                    sourceNode.disconnect();
+                } catch (e) {}
+            };
+        } else if (type === 'fireplace') {
+            // Crackling noise: short noise bursts modulated by low-frequency oscillator
+            const buffer = getNoiseBuffer();
+            sourceNode = ctx.createBufferSource();
+            sourceNode.buffer = buffer;
+            sourceNode.loop = true;
+
+            const crackleFilter = ctx.createBiquadFilter();
+            crackleFilter.type = 'lowpass';
+            crackleFilter.frequency.value = 800;
+
+            const lfo = ctx.createOscillator();
+            lfo.type = 'sine';
+            lfo.frequency.value = 2; // 2 Hz modulation
+
+            const lfoGain = ctx.createGain();
+            lfoGain.gain.value = 0.4; // modulation depth
+
+            lfo.connect(lfoGain);
+            lfoGain.connect(gainNode.gain); // modulate volume
+
+            sourceNode.connect(crackleFilter);
+            crackleFilter.connect(gainNode);
+            sourceNode.start();
+            lfo.start();
+            stopFn = () => {
+                try {
+                    sourceNode.stop();
+                    sourceNode.disconnect();
+                    lfo.stop();
+                    lfo.disconnect();
+                } catch (e) {}
+            };
+            // Keep reference to lfo for stopping
+            sourceNode._extraNodes = [lfo, lfoGain];
+        } else if (type === 'forest') {
+            // Forest: combination of low-frequency noise + occasional high-pitched tones (simulate birds)
+            const buffer = getNoiseBuffer();
+            sourceNode = ctx.createBufferSource();
+            sourceNode.buffer = buffer;
+            sourceNode.loop = true;
+
+            const lowpass = ctx.createBiquadFilter();
+            lowpass.type = 'lowpass';
+            lowpass.frequency.value = 1500;
+
+            const highpass = ctx.createBiquadFilter();
+            highpass.type = 'highpass';
+            highpass.frequency.value = 300;
+
+            sourceNode.connect(lowpass);
+            lowpass.connect(highpass);
+            highpass.connect(gainNode);
+            sourceNode.start();
+
+            // Add some random high-pitched oscillator to simulate bird chirps (very subtle)
+            const chirpOsc = ctx.createOscillator();
+            chirpOsc.type = 'sine';
+            chirpOsc.frequency.value = 3000;
+            const chirpGain = ctx.createGain();
+            chirpGain.gain.value = 0.02; // very quiet
+            chirpOsc.connect(chirpGain);
+            chirpGain.connect(gainNode);
+            chirpOsc.start();
+
+            stopFn = () => {
+                try {
+                    sourceNode.stop();
+                    sourceNode.disconnect();
+                    chirpOsc.stop();
+                    chirpOsc.disconnect();
+                } catch (e) {}
+            };
+            sourceNode._extraNodes = [chirpOsc, chirpGain];
+        } else {
+            // fallback to white noise
+            const buffer = getNoiseBuffer();
+            sourceNode = ctx.createBufferSource();
+            sourceNode.buffer = buffer;
+            sourceNode.loop = true;
+            sourceNode.connect(gainNode);
+            sourceNode.start();
+            stopFn = () => {
+                try {
+                    sourceNode.stop();
+                    sourceNode.disconnect();
+                } catch (e) {}
+            };
+        }
+
+        // Store sound object
+        currentSound = {
+            type,
+            gainNode,
+            stop: () => {
+                stopFn();
+                if (sourceNode._extraNodes) {
+                    sourceNode._extraNodes.forEach(n => {
+                        try { n.stop(); } catch (e) {}
+                        try { n.disconnect(); } catch (e) {}
+                    });
+                }
+                gainNode.disconnect();
+            }
+        };
+        currentSoundKey = type;
+
+        // Update UI
+        document.querySelectorAll('.sound-btn').forEach(btn => {
+            btn.classList.toggle('playing', btn.dataset.sound === type);
+        });
+    }
+
+    function changeAmbientVolume(val) {
+        if (currentSound && currentSound.gainNode) {
+            currentSound.gainNode.gain.value = val;
+        }
+        saveAmbientVolume(val);
+        const slider = document.getElementById('ambientVolume');
+        if (slider) slider.style.setProperty('--fill', (val * 100) + '%');
+    }
+
+    function playGentleChime() {
+        // short chime using AudioContext
+        try {
+            const ctx = getAudioContext();
+            if (ctx.state === 'suspended') return; // don't force resume
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = 880;
+            gain.gain.value = 0.1;
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.8);
+            osc.connect(gain).connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.8);
+        } catch(e) {}
+    }
+
+    let tabWarningEnabled = false;
+    let focusModeEnabled = false;
+    let darkModeEnabled = false;
+    let currentBg = 'forest';
+    let minimizedState = {};
+    let lastInteractedPad = null;
+
+    let motivationalQuotes = [
+        "You've got this! 🌱", "One step at a time.", "Focus on the now.",
+        "Done is better than perfect.", "Breathe. You're doing great.",
+        "This is your time.", "Small progress is still progress."
+    ];
+    let userQuotes = [];
+    let currentQuote = motivationalQuotes[0];
+
+    function loadLayout() {
+        const saved = localStorage.getItem('cozyNook_layout');
+        let loaded = {};
+        if (saved) try { loaded = JSON.parse(saved); } catch(e) {}
+        return { ...DEFAULT_LAYOUT, ...loaded };
+    }
+    let layout = loadLayout();
+    function saveLayout() { localStorage.setItem('cozyNook_layout', JSON.stringify(layout)); }
+
+    function loadMinimized() {
+        const saved = localStorage.getItem('cozyNook_minimized');
+        if (saved) try { minimizedState = JSON.parse(saved); } catch(e) { minimizedState = {}; }
+    }
+    loadMinimized();
+    function saveMinimized() { localStorage.setItem('cozyNook_minimized', JSON.stringify(minimizedState)); }
+
+    function loadSettings() {
+        const warn = localStorage.getItem('cozyNook_tabWarning'); if (warn !== null) tabWarningEnabled = warn === 'true';
+        const focus = localStorage.getItem('cozyNook_focusMode'); if (focus !== null) focusModeEnabled = focus === 'true';
+        const dark = localStorage.getItem('cozyNook_darkMode'); if (dark !== null) darkModeEnabled = dark === 'true';
+        const bg = localStorage.getItem('cozyNook_bg');
+        if (bg && BG_PRESETS[bg]) { currentBg = bg; } else { currentBg = 'forest'; }
+        applyBackground(currentBg);
+        applyDarkMode();
+    }
+    function saveTabWarning(val) { localStorage.setItem('cozyNook_tabWarning', val); }
+    function saveFocusMode(val) { localStorage.setItem('cozyNook_focusMode', val); }
+    function saveDarkMode(val) { localStorage.setItem('cozyNook_darkMode', val); }
+    function saveBackground(bgKey) { localStorage.setItem('cozyNook_bg', bgKey); }
+
+    function loadTodo() {
+        const saved = localStorage.getItem('cozyNook_todo');
+        if (saved) try { todoItems = JSON.parse(saved); } catch(e) { todoItems = []; }
+    }
+    loadTodo();
+    function saveTodo() { localStorage.setItem('cozyNook_todo', JSON.stringify(todoItems)); }
+
+    function loadNotes() {
+        const saved = localStorage.getItem('cozyNook_notes');
+        if (saved) notesText = saved; else notesText = '';
+    }
+    loadNotes();
+    function saveNotes(text) { localStorage.setItem('cozyNook_notes', text); }
+
+    function loadSpotifyId() { return localStorage.getItem('cozyNook_spotify_id'); }
+    function saveSpotifyId(id) { localStorage.setItem('cozyNook_spotify_id', id); }
+
+    function loadAmbientVolume() { return parseFloat(localStorage.getItem('cozyNook_ambientVolume')) || 0.5; }
+    function saveAmbientVolume(vol) { localStorage.setItem('cozyNook_ambientVolume', vol); }
+
+    function loadDistractionCount() {
+        const saved = localStorage.getItem('cozyNook_distraction');
+        if (saved) try { distractionCount = parseInt(saved, 10); } catch(e) { distractionCount = 0; }
+    }
+    loadDistractionCount();
+    function saveDistractionCount() { localStorage.setItem('cozyNook_distraction', distractionCount); }
+
+    function loadUserQuotes() {
+        const saved = localStorage.getItem('cozyNook_userQuotes');
+        if (saved) try { userQuotes = JSON.parse(saved); } catch(e) { userQuotes = []; }
+        motivationalQuotes = [...motivationalQuotes, ...userQuotes];
+    }
+    loadUserQuotes();
+    function saveUserQuotes() {
+        localStorage.setItem('cozyNook_userQuotes', JSON.stringify(userQuotes));
+        motivationalQuotes = [
+            "You've got this! 🌱", "One step at a time.", "Focus on the now.",
+            "Done is better than perfect.", "Breathe. You're doing great.",
+            "This is your time.", "Small progress is still progress."
+        ];
+        motivationalQuotes.push(...userQuotes);
+    }
+
+    function applyBackground(key) {
+        if (key === 'linen' || !BG_PRESETS[key]) {
+            document.body.style.backgroundImage = 'none';
+            document.body.style.backgroundColor = '#f4efe9';
+        } else {
+            document.body.style.backgroundImage = BG_PRESETS[key].url;
+            document.body.style.backgroundColor = '';
+        }
+    }
+
+    function applyDarkMode() {
+        if (darkModeEnabled) document.body.classList.add('dark-mode');
+        else document.body.classList.remove('dark-mode');
+    }
+
+    // ----- Timer functions (unchanged) -----
+    function formatTime(seconds, extended = false) {
+        if (extended) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+        return `${Math.floor(seconds/60).toString().padStart(2,'0')}:${(seconds%60).toString().padStart(2,'0')}`;
+    }
+    
+    function updateTimerDisplay() {
+        const d = document.getElementById('timerDisplay');
+        if(!d) return;
+        if (timerState.mode === 'stopwatch') {
+            d.innerText = formatTime(timerState.stopwatchSeconds, true);
+        } else {
+            d.innerText = formatTime(timerState.secondsLeft);
+        }
+        const modeSpan = document.getElementById('timerMode');
+        if(modeSpan) {
+            if (timerState.mode === 'pomodoro') modeSpan.innerText = timerState.mode === 'work' ? 'Work' : 'Break';
+            else if (timerState.mode === 'countdown') modeSpan.innerText = 'Countdown';
+            else modeSpan.innerText = 'Stopwatch';
+        }
+        const btn = document.getElementById('startTimer');
+        if(btn) btn.innerHTML = timerState.active ? '<i class="fas fa-pause"></i> Pause' : '<i class="fas fa-play"></i> Start';
+        
+        const skipBtn = document.getElementById('skipBtn');
+        if (skipBtn) skipBtn.style.display = timerState.mode === 'pomodoro' ? 'inline-flex' : 'none';
+    }
+
+    function tickAccurate() {
+        if (!timerState.active) return;
+        const now = Date.now();
+        if (timerState.mode === 'stopwatch') {
+            const elapsed = Math.floor((now - timerState.targetTime) / 1000);
+            timerState.stopwatchSeconds = elapsed;
+            updateTimerDisplay();
+        } else {
+            if (!timerState.targetTime) return;
+            const diff = Math.floor((timerState.targetTime - now) / 1000);
+            if (diff <= 0) {
+                timerState.active = false;
+                timerState.targetTime = null;
+                playGentleChime();
+                if (Notification.permission === 'granted') new Notification('Timer', { body: 'Time is up!', icon: '⏰' });
+                
+                if (timerState.mode === 'pomodoro') {
+                    if (timerState.mode === 'work') { timerState.mode = 'break'; timerState.secondsLeft = timerState.breakMins * 60; }
+                    else { timerState.mode = 'work'; timerState.secondsLeft = timerState.workMins * 60; }
+                } else if (timerState.mode === 'countdown') {
+                    timerState.secondsLeft = 0;
+                }
+                clearInterval(timerInterval); timerInterval = null;
+                updateTimerDisplay();
+            } else {
+                timerState.secondsLeft = diff;
+                updateTimerDisplay();
+            }
+        }
+    }
+
+    function startTimer() {
+        if (timerState.active) return;
+        const now = Date.now();
+        if (timerState.mode === 'stopwatch') {
+            timerState.targetTime = now - timerState.stopwatchSeconds * 1000;
+        } else {
+            timerState.targetTime = now + timerState.secondsLeft * 1000;
+        }
+        timerState.active = true;
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(tickAccurate, 200);
+        updateTimerDisplay();
+    }
+
+    function pauseTimer() {
+        timerState.active = false;
+        timerState.targetTime = null;
+        if(timerInterval) clearInterval(timerInterval);
+        timerInterval = null;
+        updateTimerDisplay();
+    }
+
+    function toggleTimer() { timerState.active ? pauseTimer() : startTimer(); }
+
+    function resetTimer() {
+        pauseTimer();
+        if (timerState.mode === 'pomodoro') {
+            timerState.mode = 'work';
+            timerState.secondsLeft = timerState.workMins * 60;
+        } else if (timerState.mode === 'countdown') {
+            timerState.secondsLeft = timerState.countdownMins * 60;
+        } else if (timerState.mode === 'stopwatch') {
+            timerState.stopwatchSeconds = 0;
+        }
+        updateTimerDisplay();
+    }
+
+    function skipTimerPhase() {
+        if (timerState.mode !== 'pomodoro') return;
+        pauseTimer();
+        if (timerState.mode === 'work') { timerState.mode = 'break'; timerState.secondsLeft = timerState.breakMins * 60; }
+        else { timerState.mode = 'work'; timerState.secondsLeft = timerState.workMins * 60; }
+        updateTimerDisplay();
+    }
+
+    function setTimerMode(newMode) {
+        pauseTimer();
+        timerState.mode = newMode;
+        if (newMode === 'pomodoro') {
+            timerState.secondsLeft = timerState.workMins * 60;
+        } else if (newMode === 'countdown') {
+            timerState.secondsLeft = timerState.countdownMins * 60;
+        } else if (newMode === 'stopwatch') {
+            timerState.stopwatchSeconds = 0;
+        }
+        updateTimerDisplay();
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === newMode);
+        });
+        const pomoInputs = document.getElementById('pomoInputs');
+        const countInputs = document.getElementById('countdownInputs');
+        if (pomoInputs) pomoInputs.style.display = newMode === 'pomodoro' ? 'flex' : 'none';
+        if (countInputs) countInputs.style.display = newMode === 'countdown' ? 'flex' : 'none';
+        const skipBtn = document.getElementById('skipBtn');
+        if (skipBtn) skipBtn.style.display = newMode === 'pomodoro' ? 'inline-flex' : 'none';
+    }
+
+    function updateTimerSettings() {
+        if (timerState.mode === 'pomodoro') {
+            const w = parseInt(document.getElementById('workMins')?.value) || 25;
+            const b = parseInt(document.getElementById('breakMins')?.value) || 5;
+            timerState.workMins = Math.max(1, w); timerState.breakMins = Math.max(1, b);
+            timerState.secondsLeft = timerState.workMins * 60;
+        } else if (timerState.mode === 'countdown') {
+            const c = parseInt(document.getElementById('countdownMins')?.value) || 5;
+            timerState.countdownMins = Math.max(1, c);
+            timerState.secondsLeft = timerState.countdownMins * 60;
+        }
+        resetTimer();
+    }
+
+    // Todo functions
+    function renderTodoList(container) {
+        container.innerHTML = '';
+        todoItems.forEach((item, index) => {
+            const div = document.createElement('div'); div.className = 'todo-item';
+            const checkIcon = document.createElement('i');
+            checkIcon.className = item.completed ? 'fas fa-check-square todo-check' : 'far fa-square todo-check';
+            checkIcon.onclick = () => toggleTodo(index);
+            const span = document.createElement('span'); span.className = 'todo-text'; span.innerText = item.text;
+            if (item.completed) span.classList.add('completed');
+            const del = document.createElement('button'); del.className = 'delete-todo'; del.innerHTML = '✕';
+            del.onclick = () => deleteTodo(index);
+            div.appendChild(checkIcon); div.appendChild(span); div.appendChild(del);
+            container.appendChild(div);
+        });
+    }
+    function addTodo() {
+        const input = document.getElementById('todoInput'); if (!input.value.trim()) return;
+        todoItems.push({ text: input.value.trim(), completed: false }); saveTodo(); input.value = '';
+        renderTodoList(document.getElementById('todoList'));
+    }
+    function toggleTodo(index) { todoItems[index].completed = !todoItems[index].completed; saveTodo(); renderTodoList(document.getElementById('todoList')); }
+    function deleteTodo(index) { todoItems.splice(index, 1); saveTodo(); renderTodoList(document.getElementById('todoList')); }
+    function clearCompletedTodos() {
+        todoItems = todoItems.filter(item => !item.completed);
+        saveTodo();
+        renderTodoList(document.getElementById('todoList'));
+    }
+
+    // Spotify
+    function extractPlaylistId(input) { const m = input.match(/(?:playlist[/?]|^)([a-zA-Z0-9]{22,})(?:\?|$)/); return m ? m[1] : input; }
+    function embedSpotify(id, cont) { if(id) cont.innerHTML = `<iframe src="https://open.spotify.com/embed/playlist/${id}" width="100%" height="80" frameborder="0" allow="encrypted-media"></iframe>`; }
+    function loadSpotify() {
+        const inp = document.getElementById('spotifyInput'); const val = inp.value.trim(); if(!val) return;
+        const id = extractPlaylistId(val); embedSpotify(id, document.getElementById('spotifyEmbed')); saveSpotifyId(id);
+    }
+    function loadPresetPlaylist(playlistId) {
+        embedSpotify(playlistId, document.getElementById('spotifyEmbed'));
+        document.getElementById('spotifyInput').value = playlistId;
+        saveSpotifyId(playlistId);
+    }
+
+    // Background
+    function changeBackground(key) { currentBg = key; applyBackground(key); saveBackground(key); }
+    function randomBackground() {
+        const keys = Object.keys(BG_PRESETS); 
+        const newKey = keys[Math.floor(Math.random() * keys.length)];
+        changeBackground(newKey);
+        document.querySelectorAll('input[name="bg"]').forEach(r => { if(r.value === newKey) r.checked = true; });
+    }
+    function uploadWallpaper(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            document.body.style.backgroundImage = `url('${dataUrl}')`;
+            document.body.style.backgroundColor = '';
+            try { localStorage.setItem('cozyNook_customBg', dataUrl); } catch(err) {}
+        };
+        reader.readAsDataURL(file);
+    }
+    function clearCustomBg() {
+        localStorage.removeItem('cozyNook_customBg');
+        changeBackground(currentBg);
+    }
+
+    // Minimize
+    function toggleMinimize(padId) {
+        const pad = pads[padId].pad;
+        const isMinimized = minimizedState[padId] || false;
+        if (isMinimized) {
+            pad.style.display = 'flex';
+            minimizedState[padId] = false;
+        } else {
+            pad.style.display = 'none';
+            minimizedState[padId] = true;
+        }
+        saveMinimized();
+        updateSidebarButton(padId);
+    }
+    function updateSidebarButton(padId) {
+        const btn = document.getElementById(`sidebar-${padId}`);
+        if (btn) btn.classList.toggle('minimized', minimizedState[padId]);
+    }
+
+    // Focus mode
+    function applyFocusMode() {
+        PAD_IDS.forEach(id => {
+            if (id === 'pomodoro' || id === 'todo') return;
+            pads[id].pad.style.display = focusModeEnabled ? 'none' : 'flex';
+        });
+        document.getElementById('exitFocusBtn').style.display = focusModeEnabled ? 'flex' : 'none';
+    }
+    function toggleFocusMode() { 
+        focusModeEnabled = !focusModeEnabled; 
+        applyFocusMode(); 
+        saveFocusMode(focusModeEnabled); 
+        const chk = document.getElementById('focusModeCheck'); 
+        if(chk) chk.checked = focusModeEnabled; 
+    }
+
+    function toggleDarkMode() {
+        darkModeEnabled = !darkModeEnabled;
+        applyDarkMode();
+        saveDarkMode(darkModeEnabled);
+        const chk = document.getElementById('darkModeCheck');
+        if(chk) chk.checked = darkModeEnabled;
+    }
+
+    function resetLayout() {
+        if (!confirm('Reset all pad positions and sizes?')) return;
+        layout = JSON.parse(JSON.stringify(DEFAULT_LAYOUT));
+        PAD_IDS.forEach(id => {
+            const l = layout[id]; const pad = pads[id].pad;
+            pad.style.left = l.x + 'px'; pad.style.top = l.y + 'px'; pad.style.width = l.w + 'px'; pad.style.height = l.h + 'px';
+            pad.style.display = 'flex';
+            minimizedState[id] = false;
+            updateSidebarButton(id);
+        });
+        saveLayout(); saveMinimized();
+    }
+    function clearStorage() { if (confirm('Clear all saved data?')) { localStorage.clear(); location.reload(); } }
+
+    // Distraction
+    function releaseDistraction() {
+        const input = document.getElementById('distractionInput');
+        if (input.value.trim() !== '') {
+            distractionCount++;
+            saveDistractionCount();
+            updateDistractionUI();
+            input.value = '';
+            playGentleChime();
+        }
+    }
+    function resetDistraction() {
+        distractionCount = 0;
+        saveDistractionCount();
+        updateDistractionUI();
+    }
+    function updateDistractionUI() {
+        const counter = document.getElementById('distractionCounter');
+        if (counter) counter.innerText = distractionCount;
+    }
+
+    window.addCustomQuote = function() {
+        const inp = document.getElementById('customQuoteInput');
+        if (!inp.value.trim()) return;
+        userQuotes.push(inp.value.trim());
+        saveUserQuotes();
+        inp.value = '';
+        const quoteDiv = document.querySelector('.quote-box');
+        if (quoteDiv) {
+            currentQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            quoteDiv.innerText = currentQuote;
+        }
+    };
+
+    function handleKeyDown(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        const key = e.key.toLowerCase();
+        if (key === ' ') { e.preventDefault(); toggleTimer(); }
+        else if (key === 'r') { resetTimer(); }
+        else if (key === 'f') { toggleFocusMode(); }
+        else if (key === 'm' && lastInteractedPad) { toggleMinimize(lastInteractedPad); }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Expose
+    window.toggleTimer = toggleTimer; window.resetTimer = resetTimer; window.updateTimerSettings = updateTimerSettings;
+    window.skipTimerPhase = skipTimerPhase; window.setTimerMode = setTimerMode;
+    window.addTodo = addTodo; window.clearCompletedTodos = clearCompletedTodos;
+    window.loadSpotify = loadSpotify; 
+    window.playAmbient = playAmbient; window.stopAmbient = stopAmbient;
+    window.changeAmbientVolume = changeAmbientVolume; 
+    window.changeBackground = changeBackground; window.randomBackground = randomBackground;
+    window.uploadWallpaper = uploadWallpaper; window.clearCustomBg = clearCustomBg;
+    window.resetLayout = resetLayout; window.clearStorage = clearStorage; window.toggleMinimize = toggleMinimize;
+    window.toggleFocusMode = toggleFocusMode; window.requestNotificationPermission = function() { Notification.requestPermission(); };
+    window.loadPresetPlaylist = loadPresetPlaylist;
+    window.toggleDarkMode = toggleDarkMode;
+    window.releaseDistraction = releaseDistraction; window.resetDistraction = resetDistraction;
+
+    // Tab warning
+    document.addEventListener('visibilitychange', () => {
+        if (tabWarningEnabled && document.visibilityState === 'hidden') {
+            const toast = document.createElement('div'); toast.className = 'tab-toast';
+            toast.innerHTML = `<i class="fas fa-exclamation-triangle" style="font-size:1.8rem;"></i> FOCUS! You left the tab`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+            if (Notification.permission === 'granted') {
+                new Notification('⚠️ Focus Nook', { body: 'Come back to focus!', icon: '🌿' });
+            }
+            playGentleChime();
+        }
+    });
+
+    // UI Creation
+    const app = document.getElementById('app');
+    const sidebar = document.getElementById('sidebar');
+
+    PAD_IDS.forEach(id => {
+        const pad = document.createElement('div'); pad.className = 'pad'; pad.id = `pad-${id}`; pad.dataset.id = id;
+        const l = layout[id]; pad.style.left = l.x + 'px'; pad.style.top = l.y + 'px'; pad.style.width = l.w + 'px'; pad.style.height = l.h + 'px';
+        if (minimizedState[id]) pad.style.display = 'none';
+
+        const header = document.createElement('div'); header.className = 'pad-header';
+        const titleSpan = document.createElement('span'); 
+        const icons = {
+            pomodoro: '<i class="fas fa-clock"></i>',
+            todo: '<i class="fas fa-check-circle"></i>',
+            notes: '<i class="fas fa-pen"></i>',
+            spotify: '<i class="fab fa-spotify"></i>',
+            ambient: '<i class="fas fa-cloud-rain"></i>',
+            motivation: '<i class="fas fa-quote-right"></i>',
+            settings: '<i class="fas fa-sliders-h"></i>',
+            distraction: '<i class="fas fa-brain"></i>'
+        };
+        let displayName = id.charAt(0).toUpperCase() + id.slice(1);
+        if (id === 'todo') displayName = 'To-Do';
+        titleSpan.innerHTML = (icons[id] || '<i class="fas fa-circle"></i>') + ' ' + displayName;
+        header.appendChild(titleSpan);
+        const minBtn = document.createElement('span'); 
+        minBtn.innerHTML = '<i class="fas fa-window-minimize"></i>';
+        minBtn.style.cursor = 'pointer'; minBtn.style.marginLeft = '12px'; minBtn.style.fontWeight = 'bold';
+        minBtn.onclick = (e) => { e.stopPropagation(); toggleMinimize(id); };
+        header.appendChild(minBtn);
+        pad.appendChild(header);
+
+        const content = document.createElement('div'); content.className = 'pad-content'; pad.appendChild(content);
+        const handle = document.createElement('div'); handle.className = 'resize-handle'; pad.appendChild(handle);
+        app.appendChild(pad);
+        pads[id] = { pad, content, header, minBtn, handle };
+
+        const cont = content;
+        if (id === 'pomodoro') {
+            cont.innerHTML = `
+                <div class="mode-selector">
+                    <div class="mode-btn ${timerState.mode==='pomodoro'?'active':''}" data-mode="pomodoro" onclick="setTimerMode('pomodoro')"><i class="fas fa-clock"></i> Pomodoro</div>
+                    <div class="mode-btn ${timerState.mode==='countdown'?'active':''}" data-mode="countdown" onclick="setTimerMode('countdown')"><i class="fas fa-hourglass-half"></i> Countdown</div>
+                    <div class="mode-btn ${timerState.mode==='stopwatch'?'active':''}" data-mode="stopwatch" onclick="setTimerMode('stopwatch')"><i class="fas fa-stopwatch"></i> Stopwatch</div>
+                </div>
+                <div class="timer-display" id="timerDisplay">${formatTime(timerState.secondsLeft)}</div>
+                <div id="timerMode" style="text-align:center;margin-bottom:10px;">${timerState.mode==='pomodoro'?'🌱 Work':timerState.mode==='countdown'?'⏳ Countdown':'⏱️ Stopwatch'}</div>
+                <div class="flex-row">
+                    <button id="startTimer" onclick="toggleTimer()">${timerState.active?'<i class="fas fa-pause"></i> Pause':'<i class="fas fa-play"></i> Start'}</button>
+                    <button class="secondary" onclick="resetTimer()"><i class="fas fa-undo"></i> Reset</button>
+                    <button class="secondary" id="skipBtn" onclick="skipTimerPhase()" style="${timerState.mode!=='pomodoro'?'display:none':''}"><i class="fas fa-forward"></i> Skip</button>
+                </div>
+                <div id="pomoInputs" class="flex-row mt-2" style="${timerState.mode!=='pomodoro'?'display:none':''}">
+                    <input type="number" id="workMins" min="1" max="60" value="${timerState.workMins}" style="width:75px;"> work
+                    <input type="number" id="breakMins" min="1" max="30" value="${timerState.breakMins}" style="width:75px;"> break
+                    <button class="secondary" onclick="updateTimerSettings()"><i class="fas fa-check"></i> Set</button>
+                </div>
+                <div id="countdownInputs" class="flex-row mt-2" style="${timerState.mode!=='countdown'?'display:none':''}">
+                    <input type="number" id="countdownMins" min="1" max="120" value="${timerState.countdownMins}" style="width:100px;"> minutes
+                    <button class="secondary" onclick="updateTimerSettings()"><i class="fas fa-check"></i> Set</button>
+                </div>
+            `;
+        } else if (id === 'todo') {
+            cont.innerHTML = `<div class="flex-row"><input id="todoInput" placeholder="write a task..." class="no-drag"><button onclick="addTodo()" class="no-drag"><i class="fas fa-plus"></i> Add</button></div>
+            <div class="flex-row"><button class="secondary no-drag" onclick="clearCompletedTodos()"><i class="fas fa-check-double"></i> Clear completed</button></div>
+            <div id="todoList"></div>`;
+            setTimeout(() => {
+                const inp = document.getElementById('todoInput');
+                if(inp) inp.addEventListener('keypress', (e) => { if(e.key === 'Enter') addTodo(); });
+            }, 0);
+            renderTodoList(document.getElementById('todoList'));
+        } else if (id === 'notes') {
+            const ta = document.createElement('textarea'); ta.placeholder = 'Jot down ideas...'; ta.value = notesText; ta.className = 'no-drag';
+            ta.oninput = (e) => { notesText = e.target.value; saveNotes(notesText); };
+            cont.appendChild(ta);
+        } else if (id === 'spotify') {
+            cont.innerHTML = `<div id="spotifyEmbed" class="spotify-embed"></div>
+                <p class="text-small mt-2"><i class="fab fa-spotify"></i> Playlist URL or ID</p>
+                <input id="spotifyInput" placeholder="spotify:playlist:... or link" class="no-drag">
+                <button onclick="loadSpotify()" class="no-drag"><i class="fas fa-link"></i> Load</button>
+                <div class="spotify-presets">
+                    <button onclick="loadPresetPlaylist('6ac4yB6nhTLwGtNFRD2Gda')" class="secondary no-drag"><i class="fas fa-moon"></i> LoFi</button>
+                    <button onclick="loadPresetPlaylist('1LCRf5yt7Jp58WZRAffNbi')" class="secondary no-drag"><i class="fas fa-music"></i> Classical</button>
+                    <button onclick="loadPresetPlaylist('37i9dQZF1DX3Ogo9pFvBkY')" class="secondary no-drag"><i class="fas fa-headphones"></i> Focus</button>
+                </div>`;
+            const lastId = loadSpotifyId(); if (lastId) { document.getElementById('spotifyInput').value = lastId; embedSpotify(lastId, document.getElementById('spotifyEmbed')); }
+        } else if (id === 'ambient') {
+            // ✅ FIXED: no external URLs – built‑in Web Audio synthesis
+            const vol = loadAmbientVolume();
+            cont.innerHTML = `
+                <div class="sound-grid">
+                    <button class="sound-btn no-drag" data-sound="rain"><i class="fas fa-cloud-rain"></i> rain</button>
+                    <button class="sound-btn no-drag" data-sound="fireplace"><i class="fas fa-fire"></i> fireplace</button>
+                    <button class="sound-btn no-drag" data-sound="forest"><i class="fas fa-tree"></i> forest</button>
+                    <button class="sound-btn no-drag" data-sound="white noise"><i class="fas fa-wave-square"></i> white noise</button>
+                </div>
+                <div class="flex-row"><button onclick="stopAmbient()" class="secondary no-drag"><i class="fas fa-stop"></i> Stop</button></div>
+                <label><i class="fas fa-volume-high"></i> Volume <input type="range" id="ambientVolume" min="0" max="100" value="${vol*100}" oninput="changeAmbientVolume(this.value/100)" class="no-drag"></label>
+            `;
+            // Attach click handlers for sound buttons
+            cont.querySelectorAll('.sound-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    playAmbient(btn.dataset.sound);
+                };
+            });
+            // Set initial volume slider fill
+            setTimeout(() => {
+                const slider = document.getElementById('ambientVolume');
+                if (slider) slider.style.setProperty('--fill', (vol * 100) + '%');
+            }, 0);
+        } else if (id === 'motivation') {
+            const quoteDiv = document.createElement('div'); quoteDiv.className = 'quote-box';
+            currentQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            quoteDiv.innerText = currentQuote;
+            const newQuoteBtn = document.createElement('button'); newQuoteBtn.innerHTML = '<i class="fas fa-shuffle"></i> New quote'; newQuoteBtn.className = 'secondary mt-2';
+            newQuoteBtn.onclick = () => { 
+                currentQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+                quoteDiv.innerText = currentQuote;
+            };
+            cont.appendChild(quoteDiv); cont.appendChild(newQuoteBtn);
+            const customDiv = document.createElement('div'); customDiv.className = 'flex-row mt-2';
+            const inp = document.createElement('input'); inp.id = 'customQuoteInput'; inp.placeholder = 'Add your quote...';
+            const addBtn = document.createElement('button'); addBtn.innerHTML = 'Add'; addBtn.className = 'secondary';
+            addBtn.onclick = () => window.addCustomQuote();
+            customDiv.appendChild(inp); customDiv.appendChild(addBtn);
+            cont.appendChild(customDiv);
+            const goalInput = document.createElement('input'); goalInput.placeholder = 'Today\'s intention...'; goalInput.className = 'goal-input mt-2 no-drag';
+            goalInput.onchange = (e) => localStorage.setItem('dailyGoal', e.target.value);
+            goalInput.value = localStorage.getItem('dailyGoal') || '';
+            cont.appendChild(goalInput);
+        } else if (id === 'settings') {
+            let bgRadios = '<div class="bg-selector">';
+            Object.keys(BG_PRESETS).forEach(key => {
+                const icon = BG_PRESETS[key].icon;
+                bgRadios += `<div class="bg-option">
+                    <input type="radio" name="bg" id="bg-${key}" value="${key}" ${currentBg===key?'checked':''} onchange="changeBackground('${key}')">
+                    <label for="bg-${key}"><i class="fas ${icon}"></i>${key}</label>
+                </div>`;
+            });
+            bgRadios += '</div><button class="secondary mt-2" onclick="randomBackground()"><i class="fas fa-shuffle"></i> Random</button>';
+            
+            cont.innerHTML = `
+                <label class="checkbox-wrapper">
+                    <i class="fas fa-exclamation-triangle"></i> tab warning
+                    <input type="checkbox" id="tabWarning" ${tabWarningEnabled?'checked':''} class="no-drag">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="checkbox-wrapper">
+                    <i class="fas fa-bullseye"></i> focus mode
+                    <input type="checkbox" id="focusModeCheck" ${focusModeEnabled?'checked':''} class="no-drag">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="checkbox-wrapper">
+                    <i class="fas fa-moon"></i> dark mode
+                    <input type="checkbox" id="darkModeCheck" ${darkModeEnabled?'checked':''} class="no-drag">
+                    <span class="checkmark"></span>
+                </label>
+                <div class="notification-permission" onclick="requestNotificationPermission()"><i class="fas fa-bell"></i> Enable notifications</div>
+                <hr style="margin:12px 0; border-color:var(--clay); opacity:0.2;">
+                <label>Background:</label>${bgRadios}
+                <div class="mt-2">
+                    <label>Custom wallpaper (upload):</label>
+                    <input type="file" id="wallpaperUpload" accept="image/*" class="no-drag" onchange="uploadWallpaper(this.files[0])">
+                    <button class="secondary mt-1" onclick="clearCustomBg()">Reset to preset</button>
+                </div>
+                <hr style="margin:12px 0; border-color:var(--clay); opacity:0.2;">
+                <button class="secondary" onclick="resetLayout()"><i class="fas fa-rotate-left"></i> Reset layout</button>
+                <button class="secondary" onclick="clearStorage()"><i class="fas fa-trash"></i> Clear storage</button>`;
+            
+            setTimeout(() => {
+                document.getElementById('tabWarning').addEventListener('change', e => { 
+                    tabWarningEnabled = e.target.checked; 
+                    saveTabWarning(tabWarningEnabled);
+                });
+                document.getElementById('focusModeCheck').addEventListener('change', e => { focusModeEnabled = e.target.checked; applyFocusMode(); saveFocusMode(focusModeEnabled); });
+                document.getElementById('darkModeCheck').addEventListener('change', e => { darkModeEnabled = e.target.checked; applyDarkMode(); saveDarkMode(darkModeEnabled); });
+                const customBg = localStorage.getItem('cozyNook_customBg');
+                if (customBg) document.body.style.backgroundImage = `url('${customBg}')`;
+            }, 0);
+        } else if (id === 'distraction') {
+            cont.innerHTML = `<div class="distraction-icon" onclick="releaseDistraction()"><i class="fas fa-brain"></i> 🧠</div>
+                <div class="distraction-count" id="distractionCounter">${distractionCount}</div>
+                <input id="distractionInput" placeholder="What's distracting you?" class="no-drag">
+                <div class="flex-row mt-2"><button onclick="releaseDistraction()"><i class="fas fa-leaf"></i> Release</button>
+                <button class="secondary" onclick="resetDistraction()"><i class="fas fa-undo"></i> Reset</button></div>`;
+        }
+
+        const sbBtn = document.createElement('button'); sbBtn.id = `sidebar-${id}`; sbBtn.className = `sidebar-btn ${minimizedState[id] ? 'minimized' : ''}`;
+        sbBtn.innerHTML = icons[id] || '<i class="fas fa-circle"></i>';
+        sbBtn.title = id === 'todo' ? 'To-Do' : id;
+        sbBtn.onclick = () => toggleMinimize(id);
+        sidebar.appendChild(sbBtn);
+
+        pad.addEventListener('mousedown', () => { lastInteractedPad = id; });
+    });
+
+    // Interact.js
+    PAD_IDS.forEach(id => {
+        const padEl = pads[id].pad;
+        interact(padEl).draggable({ 
+            inertia: true, 
+            modifiers: [interact.modifiers.restrictRect({ restriction: 'parent', endOnly: true })], 
+            autoScroll: true,
+            ignoreFrom: '.no-drag',
+            listeners: { 
+                move(e) { 
+                    const x = (parseFloat(e.target.style.left)||0)+e.dx, y = (parseFloat(e.target.style.top)||0)+e.dy; 
+                    e.target.style.left=x+'px'; e.target.style.top=y+'px'; 
+                    const id=e.target.dataset.id; layout[id].x=x; layout[id].y=y; 
+                }, 
+                end: saveLayout 
+            } 
+        })
+        .resizable({ 
+            edges: { bottom: true, right: true }, 
+            ignoreFrom: '.no-drag',
+            listeners: { 
+                move(e) {
+                    const t = e.target; let x = parseFloat(t.style.left)||0, y = parseFloat(t.style.top)||0;
+                    t.style.width = e.rect.width+'px'; t.style.height = e.rect.height+'px';
+                    x += e.deltaRect.left; y += e.deltaRect.top; t.style.left=x+'px'; t.style.top=y+'px';
+                    const id = t.dataset.id; layout[id].w = e.rect.width; layout[id].h = e.rect.height; layout[id].x=x; layout[id].y=y;
+                }, 
+                end: saveLayout 
+            }, 
+            modifiers: [interact.modifiers.restrictSize({ min: { width:240, height:150 } })], 
+            inertia: true 
+        });
+    });
+
+    loadSettings();
+    applyFocusMode();
+    applyDarkMode();
+
+    document.getElementById('exitFocusBtn').addEventListener('click', () => {
+        if (focusModeEnabled) toggleFocusMode();
+    });
+})();
+</script>
+</body>
+</html>
